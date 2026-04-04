@@ -202,8 +202,14 @@ export interface RazorpayErrorResponse {
     metadata: any;
 }
 
+// interface UseRazorpayProps {
+//     onSuccess?: (response: RazorpaySuccessResponse) => void;
+//     onError?: (error: RazorpayErrorResponse | any) => void;
+//     onModalClose?: () => void;
+// }
+
 interface UseRazorpayProps {
-    onSuccess?: (response: RazorpaySuccessResponse) => void;
+    onSuccess?: (response: RazorpaySuccessResponse, orderId?: string) => void;  // ← Add orderId parameter
     onError?: (error: RazorpayErrorResponse | any) => void;
     onModalClose?: () => void;
 }
@@ -265,10 +271,10 @@ export const useRazorpay = ({ onSuccess, onError, onModalClose }: UseRazorpayPro
                 // ✅ VERY IMPORTANT FIX
                 order_id: orderData.razorpayOrderId,
 
-                handler: (response) => {
-                    console.log("Payment Success:", response);
-                    onSuccess?.(response);
-                },
+            handler: (response) => {
+    console.log("Payment Success:", response);
+    onSuccess?.(response, orderData.orderId);  // ✅ Pass orderId here!
+},
 
                 prefill: {
                     name: prefillData?.name || "",
